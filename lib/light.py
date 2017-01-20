@@ -16,7 +16,7 @@ def setup():
     # Setup GPIO on raspberry pi
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
-    GPIO.setup(7, GPIO.OUT, GPIO.LOW) # Tell the program you want to use pin number 7 as output
+    GPIO.setup(7, GPIO.OUT, GPIO.HIGH) # Tell the program you want to use pin number 7 as output
     GPIO.setup(15, GPIO.IN, GPIO.PUD_DOWN)  # Set GPIO 15 as a PULL DOWN switch
     GPIO.add_event_detect(15, GPIO.RISING, activate_goal_light, 5000)
 
