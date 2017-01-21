@@ -16,7 +16,7 @@ def setup():
     # Setup GPIO on raspberry pi
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
-    GPIO.setup(7, GPIO.OUT, GPIO.HIGH) # Tell the program you want to use pin number 7 as output
+    GPIO.setup(7, GPIO.OUT, initial=GPIO.HIGH) # Tell the program you want to use pin number 7 as output. Relay is ACTIVE LOW, so OFF is HIGH
     GPIO.setup(15, GPIO.IN, GPIO.PUD_DOWN)  # Set GPIO 15 as a PULL DOWN switch
     GPIO.add_event_detect(15, GPIO.RISING, activate_goal_light, 5000)
 
@@ -25,7 +25,7 @@ def activate_goal_light(gpio_event_var=0):
     """ Function to activate GPIO for goal light and plar random audio clip. """
 
     songrandom = random.randint(1, 3) #Set random numbers depending on number of audio clips available
-    GPIO.output(7, GPIO.LOW) #Turn on light
+    GPIO.output(7, GPIO.LOW) #Turn on light, active low relay, so on is low
     # Prepare commande to play sound (change file name if needed)
     command_play_song = 'sudo mpg123 -q ./audio/goal_horn_{SongId}.mp3'.format(
         SongId=str(songrandom))

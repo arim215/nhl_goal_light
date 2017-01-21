@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
             if season:
                 if gameday:
-                    if game_end:
+                    if not game_end:
                         # Check score online and save score
                         response = requests.get(
                             "{}team/{}/score".format(API_URL, team_id))
