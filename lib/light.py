@@ -22,13 +22,13 @@ def setup():
     GPIO.add_event_detect(15, GPIO.RISING, activate_goal_light, 5000)
 
 
-def activate_goal_light(gpio_event_var=0):
+def activate_goal_light(main_dir, gpio_event_var=0):
     """ Function to activate GPIO for goal light and plar random audio clip. """
 
     songrandom = random.randint(1, 3) #Set random numbers depending on number of audio clips available
     GPIO.output(7, GPIO.HIGH) #Turn on light, active low relay, so on is low
     # Prepare commande to play sound (change file name if needed)
-    command_play_song = 'mpg123 -q /home/pi/nhl_goal_light/audio/goal_horn_{SongId}.mp3'.format(SongId=str(songrandom))
+    command_play_song = 'mpg123 -q {directory}/audio/goal_horn_{SongId}.mp3'.format(directory=main_dir,SongId=str(songrandom))
     os.system(command_play_song) # Play sound
     GPIO.output(7, GPIO.LOW) #Turn off light
 
