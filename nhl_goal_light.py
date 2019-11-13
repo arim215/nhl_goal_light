@@ -56,7 +56,7 @@ def setup_nhl():
     except IndexError:
         team_id = ""
     if team_id == "":
-        team = raw_input("Enter team you want to setup (without city) (Default: Canadiens) \n")
+        team = input("Enter team you want to setup (without city) (Default: Canadiens) \n")
         if team == "":
             team = "Canadiens"
         else:
@@ -70,7 +70,7 @@ def setup_nhl():
     except IndexError:
         delay = ""
     if delay is "":
-        delay = raw_input("Enter delay required to sync : \n")
+        delay = input("Enter delay required to sync : \n")
         if delay is "":
             delay = 0
     delay = float(delay)
