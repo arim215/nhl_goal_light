@@ -1,3 +1,4 @@
 requests
 RPI.GPIO
 pygame
+mpg123
