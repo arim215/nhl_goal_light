@@ -2,7 +2,6 @@
 
 [![GitHub release](https://img.shields.io/github/release/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/releases)
 [![GitHub commit activity the past year](https://img.shields.io/github/commit-activity/y/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/commits/master)
-[![Libraries.io for GitHub](https://img.shields.io/librariesio/github/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/blob/master/requirements.txt)
 [![license](https://img.shields.io/github/license/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/blob/master/LICENSE)
 
 ## Overview
