@@ -1,7 +1,6 @@
 # nhl_goal_light
 
 [![GitHub release](https://img.shields.io/github/release/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/releases)
-[![GitHub commit activity the past year](https://img.shields.io/github/commit-activity/y/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/commits/master)
 [![license](https://img.shields.io/github/license/arim215/nhl_goal_light.svg)](https://github.com/arim215/nhl_goal_light/blob/master/LICENSE)
 
 ## Overview
