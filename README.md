@@ -15,7 +15,7 @@ Run the following commands manually to install requirements
 
 run:
 
-    $ sudo apt-get install git python3 python3-pip
+    $ sudo apt-get install git mpg123 python3 python3-pip python-pygame python3-pygame
     $ sudo git clone https://github.com/arim215/nhl_goal_light.git 
     $ sudo pip3 install -r requirements.txt
         
