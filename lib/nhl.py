@@ -1,5 +1,7 @@
 import requests
 import datetime
+from dateutil import tz
+import pause
 
 NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
 
@@ -43,8 +45,7 @@ def fetch_score(team_id):
     url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
     # Avoid request errors (might still not catch errors)
     try:
-        score = requests.get(url)
-        score = score.json()
+        score = requests.get(url).json()
         if int(team_id) == int(score['dates'][0]['games'][0]['teams']['home']['team']['id']):
             score = int(score['dates'][0]['games'][0]['teams']['home']['score'])
         else:
@@ -81,10 +82,9 @@ def check_game_end(team_id):
     url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
     # Avoid request errors
     try:
-        game_status = requests.get(url)
-        game_status = game_status.json()
-        game_status = int(game_status['dates'][0]['games'][0]['status']['detailedState'])
-        if game_status == "Final":
+        game_status = requests.get(url).json()
+        game_status = game_status['dates'][0]['games'][0]['status']['detailedState']
+        if game_status is 'Final':
             return True
         else:
             return False
@@ -92,3 +92,17 @@ def check_game_end(team_id):
         # Return False to allow for another pass for test
         print("Error encountered, returning False for check_game_end")
         return False
+
+def get_game_time(team_id):
+    "get the time of the next game to pause and save requests"
+    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
+    # Avoid request errors
+    utc_game_time = requests.get(url).json()
+    utc_game_time = utc_game_time['dates'][0]['games'][0]['gameDate']
+    utc_game_time = datetime.datetime.strptime(utc_game_time, '%Y-%m-%dT%H:%M:%SZ')
+    utc_game_time = utc_game_time.replace(tzinfo=tz.tzutc())
+    local_game_time = utc_game_time.astimezone(tz.tzlocal())
+    print(local_game_time)
+    #pause.until(local_game_time)
+
+    return local_game_time 

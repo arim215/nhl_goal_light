@@ -3,6 +3,7 @@
 import datetime
 import time
 import os
+import pause
 from lib import nhl
 from lib import light
 
@@ -80,6 +81,7 @@ if __name__ == "__main__":
     light.setup()
 
     team_id, delay = setup_nhl()
+    game_time = nhl.test_time(team_id)
 
     try:
 
