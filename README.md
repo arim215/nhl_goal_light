@@ -47,3 +47,6 @@ If you wish to change the audio clips to sounds with your teams goal horn and mu
 ### Delay
 
 I've teste my code while watching Rogers Gamecenter Live and the stream seems to be a bit delayed, so I added a delay to my code to make the goal horn start later. You will be prompted to enter a delay that works with your stream.
+
+### Credit
+Thank you to dword4/nhlapi for documenting the public NHL API
