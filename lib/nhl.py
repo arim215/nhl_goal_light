@@ -2,6 +2,7 @@ import requests
 import datetime
 from dateutil import tz
 import pause
+import json
 
 NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
 
@@ -46,63 +47,66 @@ def fetch_score(team_id):
     # Avoid request errors (might still not catch errors)
     try:
         score = requests.get(url).json()
+
         if int(team_id) == int(score['dates'][0]['games'][0]['teams']['home']['team']['id']):
             score = int(score['dates'][0]['games'][0]['teams']['home']['score'])
+
         else:
             score = int(score['dates'][0]['games'][0]['teams']['away']['score'])
 
         # Print score for test
         print("Score: {0} Time: {1}:{2}:{3}".format(score, now.hour, now.minute, now.second))
+
         return score
+
     except requests.exceptions.RequestException:
         print("Error encountered, returning 0 for score")
         return 0
 
 
-def check_if_game(team_id):
+def check_game_status(team_id,date):
     """ Function to check if there is a game now with chosen team. Returns True if game, False if NO game. """
+    # Set URL depending on team selected and date
+    url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id,date)
 
-    # Set URL depending on team selected
-    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id) #Only shows games after noon, so will sleep till 12:10 pm
     try:
-        gameday_url = requests.get(url)
-        if "gamePk" in gameday_url.text:
-            return True
-        else:
-            return False
-    except requests.exceptions.RequestException:
-        # Return True to allow for another pass for test
-        print("Error encountered, returning True for check_game")
-        return True
-
-def check_game_end(team_id):
-    """ Function to check if the game ofchosen team is over. Returns True if game, False if NO game. """
-
-    # Set URL depending on team selected
-    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
-    # Avoid request errors
-    try:
+        #get game state from API (no state when no games on date)
         game_status = requests.get(url).json()
         game_status = game_status['dates'][0]['games'][0]['status']['detailedState']
-        if game_status is 'Final':
-            return True
-        else:
-            return False
-    except requests.exceptions.RequestException:
-        # Return False to allow for another pass for test
-        print("Error encountered, returning False for check_game_end")
-        return False
+        return game_status
 
-def get_game_time(team_id):
-    "get the time of the next game to pause and save requests"
-    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
-    # Avoid request errors
+    except IndexError:
+        #Return No Game when no state available on API since no game
+        return 'No Game'
+
+    except requests.exceptions.RequestException:
+        # Return No Game to keep going
+        return 'No Game'
+
+
+def get_next_game_date(team_id):
+    "get the time of the next game"
+    date_test = datetime.date.today()
+    gameday = check_game_status(team_id,date_test)
+
+    #Keep going until game day found
+    while (gameday != "Scheduled"):
+        date_test = date_test + datetime.timedelta(days=1)
+        gameday = check_game_status(team_id,date_test)
+
+    #Get start time of next game
+    url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id,date_test)
     utc_game_time = requests.get(url).json()
     utc_game_time = utc_game_time['dates'][0]['games'][0]['gameDate']
+    next_game_time = convert_to_local_time(utc_game_time) + datetime.timedelta(minutes=1)
+
+    return next_game_time
+
+def convert_to_local_time(utc_game_time):
+    "convert to local time from UTC"
     utc_game_time = datetime.datetime.strptime(utc_game_time, '%Y-%m-%dT%H:%M:%SZ')
     utc_game_time = utc_game_time.replace(tzinfo=tz.tzutc())
     local_game_time = utc_game_time.astimezone(tz.tzlocal())
-    print(local_game_time)
-    #pause.until(local_game_time)
 
-    return local_game_time 
+    return local_game_time
+

@@ -1,26 +1,10 @@
 #!/usr/bin/python
 
 import datetime
-import time
 import os
 import pause
 from lib import nhl
 from lib import light
-
-def sleep(sleep_period):
-    """ Function to sleep if not in season or no game.
-    Inputs sleep period depending if it's off season or no game."""
-
-    # Get current time
-    now = datetime.datetime.now()
-    # Set sleep time for no game today
-    delta = datetime.timedelta(hours=sleep_period)
-    next_day = datetime.datetime.today() + delta
-    next_day = next_day.replace(hour=12, minute=10)
-    sleep = next_day - now
-    sleep = sleep.total_seconds()
-    time.sleep(sleep)
-
 
 def setup_nhl():
     """Function to setup the nhl_goal_light.py with team,
@@ -37,7 +21,8 @@ def setup_nhl():
     lines = ""
     team = ""
     team_id = ""
-    settings_file = '/home/pi/nhl_goal_light/settings.txt'
+    #settings_file = '/home/pi/nhl_goal_light/settings.txt'
+    settings_file = 'settings.txt'
     if os.path.exists(settings_file):
         # get settings from file
         f = open(settings_file, 'r')
@@ -79,47 +64,39 @@ if __name__ == "__main__":
     season = False
 
     light.setup()
-
     team_id, delay = setup_nhl()
-    game_time = nhl.test_time(team_id)
 
     try:
 
         while (True):
 
-            time.sleep(1)
+           pause.milliseconds(500)
 
-            # check game
-            gameday = nhl.check_if_game(team_id)
+           # check game
+           today = datetime.date.today()
+           game_status = nhl.check_game_status(team_id,today)
 
-            if gameday:
+           if (game_status == 'In Progress') or (game_status == 'Pre-Game'):
 
-                # check end of game
-                game_end = nhl.check_game_end(team_id)
+                # Check score online and save score
+               new_score = nhl.fetch_score(team_id)
 
-                if not game_end:
-
-                    # Check score online and save score
-                    new_score = nhl.fetch_score(team_id)
-
-                    # If score change...
-                    if new_score != old_score:
-                        time.sleep(delay)
-                        if new_score > old_score:
-                            # save new score
-                            print("GOAL!")
-                            # activate_goal_light()
-                            light.activate_goal_light()
-                        old_score = new_score
+                # If score change...
+               if new_score != old_score:
+                   pause.seconds(delay)
+                   if new_score > old_score:
+                       # save new score
+                       print("GOAL!")
+                       # activate_goal_light()
+                       light.activate_goal_light()
+                   old_score = new_score
 
 
-                else:
-                    print("Game Over!")
-                    old_score = 0 # Reset for new game
-                    sleep("day")  # sleep till tomorrow
-            else:
-                print("No Game Today!")
-                sleep(12)  # sleep till tomorrow
+           else:
+               old_score = 0 # Reset for new game
+               next_game_date = nhl.get_next_game_date(team_id)
+               print ("Going to sleep until next game : " + str(next_game_date))
+               pause.until(next_game_date)
 
     except KeyboardInterrupt:
         print("\nCtrl-C pressed")
