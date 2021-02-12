@@ -55,7 +55,7 @@ def fetch_score(team_id):
             score = int(score['dates'][0]['games'][0]['teams']['away']['score'])
 
         # Print score for test
-        print("Score: {0} Time: {1}:{2}:{3}".format(score, now.hour, now.minute, now.second))
+        print("Score: {0} Time: {1}:{2}:{3}".format(score, now.hour, now.minute, now.second),end='\r')
 
         return score
 
@@ -109,4 +109,3 @@ def convert_to_local_time(utc_game_time):
     local_game_time = utc_game_time.astimezone(tz.tzlocal())
 
     return local_game_time
-
