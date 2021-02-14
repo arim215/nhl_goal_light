@@ -90,7 +90,7 @@ def get_next_game_date(team_id):
     gameday = check_game_status(team_id,date_test)
 
     #Keep going until game day found
-    while (gameday != "Scheduled"):
+    while ("Scheduled" not in gameday):
         date_test = date_test + datetime.timedelta(days=1)
         gameday = check_game_status(team_id,date_test)
 

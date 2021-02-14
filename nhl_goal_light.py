@@ -76,7 +76,7 @@ if __name__ == "__main__":
            today = datetime.date.today()
            game_status = nhl.check_game_status(team_id,today)
 
-           if (game_status == 'In Progress') or (game_status == 'Pre-Game'):
+           if ('In Progress' in game_status) or ('Pre-Game' in game_status):
 
                 # Check score online and save score
                new_score = nhl.fetch_score(team_id)
