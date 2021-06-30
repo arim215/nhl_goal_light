@@ -98,7 +98,7 @@ def get_next_game_date(team_id):
     url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id,date_test)
     utc_game_time = requests.get(url).json()
     utc_game_time = utc_game_time['dates'][0]['games'][0]['gameDate']
-    next_game_time = convert_to_local_time(utc_game_time) + datetime.timedelta(minutes=1)
+    next_game_time = convert_to_local_time(utc_game_time) - datetime.timedelta(seconds=30)
 
     return next_game_time
 

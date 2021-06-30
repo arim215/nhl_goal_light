@@ -4,3 +4,4 @@ pygame
 mpg123
 python-dateutil
 pause
+playsound

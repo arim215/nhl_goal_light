@@ -58,14 +58,14 @@ def setup_nhl():
 
 if __name__ == "__main__":
 
-    old_score = 0
+    old_score = 100
     new_score = 0
     gameday = False
     season = False
 
     light.setup()
     team_id, delay = setup_nhl()
-
+    print ("Team ID : {0} \nDelay to use : {1}\n".format(team_id,delay))
     try:
 
         while (True):
@@ -93,11 +93,16 @@ if __name__ == "__main__":
 
 
            else:
-               old_score = 0 # Reset for new game
+               old_score = 100 # Reset for new game
                next_game_date = nhl.get_next_game_date(team_id)
-               print ("Going to sleep until next game : " + str(next_game_date))
+               print ("Going to sleep until game : " + str(next_game_date))
                pause.until(next_game_date)
 
     except KeyboardInterrupt:
         print("\nCtrl-C pressed")
         light.cleanup()
+
+    except EOFError:
+        print("\nCtrl-D pressed")
+        print("change delay to?")
+        pass
