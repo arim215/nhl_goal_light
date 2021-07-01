@@ -80,11 +80,10 @@ if __name__ == "__main__":
 
                 # Check score online and save score
                new_score = nhl.fetch_score(team_id)
-
                 # If score change...
                if new_score != old_score:
-                   pause.seconds(delay)
                    if new_score > old_score:
+                       pause.seconds(delay)
                        # save new score
                        print("GOAL!")
                        # activate_goal_light()
@@ -101,8 +100,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nCtrl-C pressed")
         light.cleanup()
-
-    except EOFError:
-        print("\nCtrl-D pressed")
-        print("change delay to?")
-        pass

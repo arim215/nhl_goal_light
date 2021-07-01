@@ -48,6 +48,9 @@ def fetch_score(team_id):
     try:
         score = requests.get(url).json()
 
+        #game_time = str(score['dates'][0]['games'][0]['teams'])
+        #print (game_time)
+
         if int(team_id) == int(score['dates'][0]['games'][0]['teams']['home']['team']['id']):
             score = int(score['dates'][0]['games'][0]['teams']['home']['score'])
 
