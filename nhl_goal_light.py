@@ -62,22 +62,32 @@ if __name__ == "__main__":
     new_score = 0
     gameday = False
     season = False
+    delay_checked = False
 
     light.setup()
     team_id, delay = setup_nhl()
     print ("Team ID : {0} \nDelay to use : {1}\n".format(team_id,delay))
     try:
 
-        while (True):
+        today = datetime.date.today()
 
+
+        while (True):
            pause.milliseconds(500)
 
+
            # check game
-           today = datetime.date.today()
            game_status = nhl.check_game_status(team_id,today)
 
            if ('In Progress' in game_status) or ('Pre-Game' in game_status):
 
+               if not delay_checked:
+                   answer = input("do you want to check for delay? ")
+                   if (answer is "yes"):
+                       start_delay = nhl.game_start_delay(team_id,today)
+                       answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
+                       if (answer is "yes"):
+                           delay = input("Enter new delay : ")
                 # Check score online and save score
                new_score = nhl.fetch_score(team_id)
                 # If score change...
@@ -90,12 +100,18 @@ if __name__ == "__main__":
                        light.activate_goal_light()
                    old_score = new_score
 
+           elif ('Final' in game_status):
+               light.cleanup()
+               print ("Game ended, cleanning up!")
+               break
 
            else:
                old_score = 100 # Reset for new game
                next_game_date = nhl.get_next_game_date(team_id)
-               print ("Going to sleep until game : " + str(next_game_date))
+               print ("Going to sleep until start of next game : " + str(next_game_date))
                pause.until(next_game_date)
+               today = datetime.date.today()
+
 
     except KeyboardInterrupt:
         print("\nCtrl-C pressed")

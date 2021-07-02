@@ -112,3 +112,45 @@ def convert_to_local_time(utc_game_time):
     local_game_time = utc_game_time.astimezone(tz.tzlocal())
 
     return local_game_time
+
+def game_start_delay(team_id,date):
+    url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id,date)
+
+    is_game_started = False
+
+    while is_game_started:
+        try:
+            #get game state from API (no state when no games on date)
+            gamePK = requests.get(url).json()
+            gamePK = gamePK['dates'][0]['games'][0]['gamePk']
+
+            url = '{0}game/{1}/feed/live'.format(NHL_API_URL,gamePK)
+            live_feed = requests.get(url).json()
+            #url = '{0}game/{1}/content'.format(NHL_API_URL,gamePK)
+            #game_content = requests.get(url).json()
+            #game_content = game_content['media']['milestones']['items'][1]['timeAbsolute']
+
+            live_feed = live_feed['liveData']['linescore']['periods'][0]['startTime']
+            live_feed = convert_to_local_time(live_feed)
+
+            live_feed = live_feed.strftime("%X")
+            live_feed = datetime.datetime.strptime(live_feed, '%H:%M:%S')
+            goal_pressed = input("Press any key when period starts")
+            now_time = datetime.datetime.strptime(datetime.datetime.now().strftime("%X"), '%H:%M:%S')
+            delay_count = now_time - live_feed
+            is_game_started = False
+            return delay_count
+
+        except IndexError:
+            #Return No Game when no state available on API since no game
+            is_game_started = True
+            pass
+
+        except requests.exceptions.RequestException:
+            # Return No Game to keep going
+            is_game_started = True
+            pass
+
+        except KeyError:
+            is_game_started = True
+            pass
