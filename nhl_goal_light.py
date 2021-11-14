@@ -70,20 +70,21 @@ if __name__ == "__main__":
     try:
 
         today = datetime.date.today()
-        game_status = nhl.check_game_status(team_id,today)
+        
+        while (True):
+           pause.milliseconds(500)
+           game_status = nhl.check_game_status(team_id,today)
 
-        if ('In Progress' in game_status) or ('Pre-Game' in game_status):
+           if ('In Progress' in game_status) or ('Pre-Game' in game_status):
 
              if not delay_checked:
+                delay_checked = True
                 answer = input("do you want to check for delay? ")
                 if (answer == "yes"):
                     start_delay = nhl.game_start_delay(team_id,today)
                     answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
                     if (answer == "yes"):
                         delay = input("Enter new delay : ")
-        while (True):
-           pause.milliseconds(500)
-
            # check game
                 # Check score online and save score
                new_score = nhl.fetch_score(team_id)
