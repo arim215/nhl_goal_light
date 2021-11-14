@@ -47,9 +47,9 @@ def setup_nhl():
         delay = lines[2].strip('\n')
     except IndexError:
         delay = ""
-    if delay is "":
+    if delay == "":
         delay = input("Enter delay required to sync : \n")
-        if delay is "":
+        if delay == "":
             delay = 0
     delay = float(delay)
 
@@ -70,24 +70,21 @@ if __name__ == "__main__":
     try:
 
         today = datetime.date.today()
+        game_status = nhl.check_game_status(team_id,today)
 
+        if ('In Progress' in game_status) or ('Pre-Game' in game_status):
 
+             if not delay_checked:
+                answer = input("do you want to check for delay? ")
+                if (answer == "yes"):
+                    start_delay = nhl.game_start_delay(team_id,today)
+                    answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
+                    if (answer == "yes"):
+                        delay = input("Enter new delay : ")
         while (True):
            pause.milliseconds(500)
 
-
            # check game
-           game_status = nhl.check_game_status(team_id,today)
-
-           if ('In Progress' in game_status) or ('Pre-Game' in game_status):
-
-               if not delay_checked:
-                   answer = input("do you want to check for delay? ")
-                   if (answer is "yes"):
-                       start_delay = nhl.game_start_delay(team_id,today)
-                       answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
-                       if (answer is "yes"):
-                           delay = input("Enter new delay : ")
                 # Check score online and save score
                new_score = nhl.fetch_score(team_id)
                 # If score change...
