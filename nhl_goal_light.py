@@ -77,16 +77,16 @@ if __name__ == "__main__":
 
            if ('In Progress' in game_status) or ('Pre-Game' in game_status):
 
-             if not delay_checked:
-                delay_checked = True
-                answer = input("do you want to check for delay? ")
-                if (answer == "yes"):
-                    start_delay = nhl.game_start_delay(team_id,today)
-                    answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
-                    if (answer == "yes"):
-                        delay = input("Enter new delay : ")
-           # check game
-                # Check score online and save score
+               if not delay_checked:
+                  delay_checked = True
+                  answer = input("do you want to check for delay? ")
+                  if (answer == "yes"):
+                      start_delay = nhl.game_start_delay(team_id,today)
+                      answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
+                      if (answer == "yes"):
+                          delay = input("Enter new delay : ")
+               # check game
+               # Check score online and save score
                new_score = nhl.fetch_score(team_id)
                 # If score change...
                if new_score != old_score:
