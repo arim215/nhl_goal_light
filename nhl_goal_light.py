@@ -60,9 +60,6 @@ if __name__ == "__main__":
 
     old_score = 100
     new_score = 0
-    gameday = False
-    season = False
-    delay_checked = False
 
     light.setup()
     team_id, delay = setup_nhl()
@@ -70,25 +67,14 @@ if __name__ == "__main__":
     try:
 
         today = datetime.date.today()
-        
+
         while (True):
            pause.milliseconds(500)
            game_status = nhl.check_game_status(team_id,today)
-
            if ('In Progress' in game_status) or ('Pre-Game' in game_status):
-
-               if not delay_checked:
-                  delay_checked = True
-                  answer = input("do you want to check for delay? ")
-                  if (answer == "yes"):
-                      start_delay = nhl.game_start_delay(team_id,today)
-                      answer = input("delay is of {0}, do you want to update current delay ({1})? ".format(start_delay,delay))
-                      if (answer == "yes"):
-                          delay = input("Enter new delay : ")
-               # check game
-               # Check score online and save score
+               # Check current score
                new_score = nhl.fetch_score(team_id)
-                # If score change...
+                # If score changed...
                if new_score != old_score:
                    if new_score > old_score:
                        pause.seconds(delay)
@@ -98,12 +84,10 @@ if __name__ == "__main__":
                        light.activate_goal_light()
                    old_score = new_score
 
-           elif ('Final' in game_status):
-               light.cleanup()
-               print ("Game ended, cleanning up!")
-               break
-
            else:
+               if ('Final' in game_status):
+                  print ("Game ended!")
+                  print ("Preparing for next game")
                old_score = 100 # Reset for new game
                next_game_date = nhl.get_next_game_date(team_id)
                print ("Going to sleep until start of next game : " + str(next_game_date))
